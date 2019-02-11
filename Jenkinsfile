@@ -5,6 +5,9 @@ pipeline {
             args '-v /root/.m2:/root/.m2'
         }
     }
+	parameters {
+		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
+	}
     stages {
         stage('Build') {
             steps {
@@ -24,6 +27,7 @@ pipeline {
 		stage('Deploy') {
 			steps{
 					timeout(time: 15, unit: 'SECONDS') {
+					echo "${params.Greeting} World!"
 					input 'Deploy?'
 					echo 'Deploying..'
 				}
