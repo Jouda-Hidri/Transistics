@@ -24,21 +24,6 @@ pipeline {
                 }
             }
         }
-        /*
-        stage ('Docker Push') {
-        	steps {
-				sh '''
-        		mvn clean install 
-        		./mvnw package
-        		java -jar target/app.jar
-        		docker build -t transactions-statistics-image .
-        		docker login
-				docker tag transactions-statistics-image joudahidri/transactions-statistics-image
-				docker push joudahidri/transactions-statistics-image:latest
-        		'''
-            }
-        }
-        */
 		stage('Deploy') {
 			steps{
 					timeout(time: 15, unit: 'SECONDS') {
