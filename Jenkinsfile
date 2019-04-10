@@ -1,11 +1,7 @@
 pipeline {
-    agent {
-        docker {
-        	image 'maven:3.3.3'
-            args '-v /root/.m2:/root/.m2' 
-            args '-v /var/run/docker.sock:/var/run/docker.sock'           
-        }
-    }
+    
+    agent any
+    
     environment {
        DOCKERHUB_CRENDETIALS = credentials('dockerhub')
        DOCKERHUB_USERNAME = "${DOCKERHUB_CRENDETIALS_USR}"
