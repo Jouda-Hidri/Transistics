@@ -2,10 +2,9 @@ pipeline {
     
     agent any
     
-    environment {
-       DOCKERHUB_CRENDETIALS = credentials('dockerhub')
-       DOCKERHUB_USERNAME = "${DOCKERHUB_CRENDETIALS_USR}"
-       DOCKERHUB_PASSWORD = "${DOCKERHUB_CRENDETIALS_PSW}"
+    environment {       
+       registry = "joudahidri/transactions-statistics-image"
+       registryCredential = 'dockerhub'
     }
 	parameters {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
@@ -28,13 +27,9 @@ pipeline {
         }
 		stage('Building image') {
 			steps {
-				sh '''
-					docker build --build-arg JAR_FILE=target/app.jar -t transactions-statistics-image .
-					docker tag transactions-statistics-image transactions-statistics-image:latest
-					echo $DOCKERHUB_PASSWORD | docker login joudahidri/transactions-statistics-image -u $DOCKERHUB_USERNAME --password-stdin
-					docker push transactions-statistics-image
-					docker push transactions-statistics-image:latest
-				sh '''
+				script {
+					docker.build registry + ":$BUILD_NUMBER"
+        		}
 			}
 		}
 		stage('Deploy') {
