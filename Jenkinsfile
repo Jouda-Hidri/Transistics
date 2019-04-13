@@ -5,6 +5,7 @@ pipeline {
     environment {       
        registry = "joudahidri/transactions-statistics-image"
        registryCredential = 'dockerhub'
+       dockerImage = ''
     }
 	parameters {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
@@ -26,12 +27,26 @@ pipeline {
             }
         }
 		stage('Building image') {
-			steps {
-				script {
-					docker.build registry + ":$BUILD_NUMBER"
-        		}
-			}
-		}
+	      steps{
+	        script {
+	          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+	        }
+	      }
+	    }
+	    stage('Deploy Image') {
+	      steps{
+	        script {
+	          docker.withRegistry( '', registryCredential ) {
+	            dockerImage.push()
+	          }
+	        }
+	      }
+	    }
+	    stage('Remove Unused docker image') {
+	      steps{
+	        sh "docker rmi $registry:$BUILD_NUMBER"
+	      }
+	    }
 		stage('Deploy') {
 			steps{
 					timeout(time: 15, unit: 'SECONDS') {
