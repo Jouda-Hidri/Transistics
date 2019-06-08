@@ -11,6 +11,18 @@ pipeline {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
 	}
     stages {
+	    stage('validation') {
+            steps {
+            	script {
+	            	if ( GIT_BRANCH == 'dev') {
+						echo 'Validation is required'
+					}
+	            	else {
+	            		echo 'No validation required'
+	            	}
+	            }
+            }
+	    }
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
@@ -47,14 +59,10 @@ pipeline {
 	        sh "docker rmi $registry:$BUILD_NUMBER"
 	      }
 	    }
-		stage('Deploy') {
-			steps{
-					timeout(time: 15, unit: 'SECONDS') {
-					echo "${params.Greeting} World!"
-					input 'Deploy?'
-					echo 'Deploying..'
-				}
-			}
+		stage('Deploy') { 
+           steps {
+                echo 'Deploy ...'
+            }
         }
         stage('Post deploy') { 
            steps {
