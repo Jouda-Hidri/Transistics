@@ -16,7 +16,8 @@ pipeline {
 	    stage('validation') {
             steps {
             	script {
-	            	if ( HOUR.toInteger() > 9 ) {
+	            	if ( GIT_BRANCH == 'master'
+						&& (DAY == "Sun" || HOUR.toInteger() > 9) ) {
 						timeout(time: 15, unit: 'SECONDS') {
 							input 'Validation is required'
 							echo 'Validated!'
