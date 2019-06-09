@@ -13,19 +13,18 @@ pipeline {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
 	}
     stages {
-	    stage('validation') {
-            steps {
+		stage('validation') {
+			when {
+				expression {
+					return (GIT_BRANCH == 'master' && (DAY == "Sun" || HOUR.toInteger() > 9))
+				}
+			}
+			steps {
             	script {
-	            	if ( GIT_BRANCH == 'master'
-						&& (DAY == "Sun" || HOUR.toInteger() > 9) ) {
-						timeout(time: 15, unit: 'SECONDS') {
-							input 'Validation is required'
-							echo 'Validated!'
-						}
+					timeout(time: 15, unit: 'SECONDS') {
+						input 'Validation is required'
+						echo 'Validated!'
 					}
-	            	else {
-						echo "No validation required, today is $Day time is $Hour"
-	            	}
 	            }
             }
 	    }
