@@ -7,7 +7,7 @@ pipeline {
        registryCredential = 'dockerhub'
        dockerImage = ''
        DAY=sh(returnStdout: true, script: 'date +"%a"').trim()
-       HOUR=sh(returnStdout: true, script: 'date +"%H"').trim().toInteger() 
+       HOUR=sh(returnStdout: true, script: 'date +"%H"').trim() 
     }
 	parameters {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
@@ -16,8 +16,8 @@ pipeline {
 	    stage('validation') {
             steps {
             	script {
-	            	if ( DAY == "Sat" ) {
-	            		timeout(time: 15, unit: 'SECONDS') {
+	            	if ( HOUR.toInteger() > 9 ) {
+						timeout(time: 15, unit: 'SECONDS') {
 							input 'Validation is required'
 							echo 'Validated!'
 						}
