@@ -13,10 +13,18 @@ pipeline {
 		string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
 	}
     stages {
+		stage('curfew') {
+			steps {
+			    script {
+					curfew()
+				
+	            }
+			}
+	    }    	
 		stage('validation') {
 			when {
 				expression {
-					return (GIT_BRANCH == 'master' && (DAY == "Sun" || HOUR.toInteger() > 9))
+					return (GIT_BRANCH == 'master' && (DAY == "Fri" || HOUR.toInteger() >= 13 ))
 				}
 			}
 			steps {
